@@ -1,5 +1,5 @@
 [package]
-name = "complete-restful-api-in-rust"
+name = "actix_web_jwt"
 version = "0.1.0"
 edition = "2021"
 
