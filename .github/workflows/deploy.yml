@@ -1,28 +1,36 @@
-name: Build and deploy
-on:
-  push:
-    branches:
-      - main
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
-    steps:
-      - uses: actions/checkout@main
-      - name: Checkout 🛎️
-        run: |
-          which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y  )
-          which rsync || ( apt-get update -y && apt-get install rsync -y )
-          eval $(ssh-agent -s)
-          ssh-add <(echo "$SSH_PRIVATE_KEY" )
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
-          scp -r * root@$SERVER_IP:/var/www/html
-    env:
-      SSH_PRIVATE_KEY: ${{secrets.SSH_KEY}}
-      SERVER_IP: ${{secrets.SERVER_IP}}
-      CI: false
+# name: Build and deploy
+# on:
+#   push:
+#     branches:
+#       - main
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         node-version: [16.x]
+#     steps:
+#       - name: Checkout 🛎️
+#         uses: actions/checkout@v2
+
+#       - name: SSH into DigitalOcean Droplet
+#         uses: appleboy/ssh-action@v0.5.4
+#         with:
+#           host: ${{ secrets.SERVER_IP }}
+#           username: root
+#           key: ${{ secrets.SSH_KEY }}
+#           script:
+    #     run: |
+    #       which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y  )
+    #       which rsync || ( apt-get update -y && apt-get install rsync -y )
+    #       eval $(ssh-agent -s)
+    #       ssh-add <(echo "$SSH_PRIVATE_KEY" )
+    #       mkdir -p ~/.ssh
+    #       chmod 700 ~/.ssh
+    #       ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
+    #       chmod 644 ~/.ssh/known_hosts
+    #       scp -r * root@$SERVER_IP:/var/www/html
+    # env:
+    #   SSH_PRIVATE_KEY: ${{secrets.SSH_KEY}}
+    #   SERVER_IP: ${{secrets.SERVER_IP}}
+    #   CI: false
